@@ -180,13 +180,22 @@ data_1_3=[-0.055   0       0.13    0.013;  %û
         0        0       6.6     -4.0];  %alpha_prima
 
 Cxu = data_1_3(1,1)*cosd(alpha)-data_1_3(1,2)*cosd(alpha)+data_1_3(1,3)*sind(alpha);  % Cxu = CTu*cos(a) - CDu*cos(a) + CLu*sin(a)
-Czu = -data_1_3(1,1)*sind(alpha)-data_1_3(1,3)*cosd(alpha)-data_1_3(1,3)*sind(alpha);  % Czu = CTu*sin(a) - CLu*cos(a) - CDu*sin(A)
+Czu = -data_1_3(1,1)*sind(alpha)-data_1_3(1,3)*cosd(alpha)-data_1_3(1,3)sind(alpha);  % Czu = CTu*sin(a) - CLu*cos(a) - CDu*sin(A)
 Cxa = CL0-data_1_3(2,2);          % Cxa = CL0 - CDa
 Cza = -data_1_3(2,3)-CD0;         % Cza = -CLa - CD0
 Cxq = -data_1_3(3,2);             % Cxq = -CDq
 Czq = -data_1_3(3,3);             % Czq = -CLq
-Cxap = data_1_3(4,1)*cosd(alpha)-data_1_3(4,2)*cosd(alpha)+data_1_3(4,3)*sind(alpha); % Cxap = CTap*cos(a) - CDap*cos(a) + CLap*sin(a)
-Czap = -data_1_3(4,1)*sind(alpha)-data_1_3(4,3)*cosd(alpha)-data_1_3(4,2)*sind(alpha);% Czap = -CTap*sin(a) - CLap*cos(a) - CDap*sin(a)
+Cxap = data_1_3(4,1)*cosd(alpha)-data_1_3(4,2)*cosd(alpha);            % Cxap = -CDap
+Czap = -data_1_3(4,3);            % Czap = -CLap
+
+Cxu = coef(1,1)*cosd(alfa)-coef(1,2)*cosd(alfa)+coef(1,3)*sind(alfa);
+Czu = -coef(1,1)*sind(alfa)-coef(1,3)*cosd(alfa)-coef(1,2)*sind(alfa);
+Cxa = (-coef(2,2)+CL0);
+Cza = -(coef(2,2)+CD0);
+Cxq = 0;
+Czq = -coef(3,3);
+Cxap = coef(4,1)*cosd(alfa)-coef(4,2)*cosd(alfa)+coef(4,3)*sind(alfa);
+Czap = -coef(4,1)*sind(alfa)-coef(4,3)*cosd(alfa)-coef(4,2)*sind(alfa);
 
 % Longitudinal Stability Derivatives
 %           X                                 Z                                M
