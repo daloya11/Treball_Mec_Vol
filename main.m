@@ -189,11 +189,11 @@ Cxap = data_1_3(4,1)*cosd(alpha)-data_1_3(4,2)*cosd(alpha)+data_1_3(4,3)*sind(al
 Czap = -data_1_3(4,1)*sind(alpha)-data_1_3(4,3)*cosd(alpha)-data_1_3(4,2)*sind(alpha);% Czap = -CTap*sin(a) - CLap*cos(a) - CDap*sin(a)
 
 % Longitudinal Stability Derivatives
-%           X                                 Z                                M
+%                    X                                 Z                                M
 ctrlderiv_3=[0.5*dens*u0*S*Cxu         -dens*u0*S*Cw0+0.5*dens*u0*S*Czu    0.5*dens*u0*S*MAC*data_1_3(1,4);      %u
-      0.5*dens*u0*S*Cxa         0.5*dens*u0*S*Cza                   0.5*dens*u0*S*MAC*data_1_3(2,4);      %w
-      0.25*dens*u0*S*MAC*Cxq    0.25*dens*u0*S*MAC*Czq              0.25*dens*u0*S*MAC^2*data_1_3(3,4);   %q
-      0.25*dens*S*MAC*Cxap      0.25*dens*S*MAC*Czap                0.25*dens*S*MAC^2*data_1_3(4,4)];     %w·
+             0.5*dens*u0*S*Cxa         0.5*dens*u0*S*Cza                   0.5*dens*u0*S*MAC*data_1_3(2,4);      %w
+             0.25*dens*u0*S*MAC*Cxq    0.25*dens*u0*S*MAC*Czq              0.25*dens*u0*S*MAC^2*data_1_3(3,4);   %q
+             0.25*dens*S*MAC*Cxap      0.25*dens*S*MAC*Czap                0.25*dens*S*MAC^2*data_1_3(4,4)];     %w·
 
 A_3=zeros(4);
 
