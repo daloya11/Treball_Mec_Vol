@@ -28,6 +28,7 @@ dens=1.225*exp(-(g/(287*(273+21)))*(h));
 CL0=(2*m*g)/(dens*S*u0^2);
 Cw0=(m*g)/(1/2*dens*u0^2*S);
 
+save('data_mv.mat', 'm', 'S', 'MAC', 'b', 'CD0', 'h', 'Ix', 'Iy','Iz','Ixz','Ixp','Izp','Ixzp','mach','a','theta0','u0','g','dens','CL0','Cw0'); 
 %% Uncontrolled Longitudinal Motion
 %% QUESTION 1: 
 %Find the eigenvalues and their corresponding eigenvectors
@@ -170,76 +171,42 @@ title('Eigenvalues variation with Cmq')
 %% QUESTION 3
 % For the lowest value of Cmq plot the short period mode corresponding to
 % an initial perturbed angle of attack alpha = 3º
-alpha = 3;
 
-% Longitudinal Stability Derivatives
-%      CT       CD      CL      Cm
-data_1_3=[-0.055   0       0.13    0.013;  %û
-        0        0.2     4.4     -1.0;   %alpha
-        0        0       5.65    -10.25;  %^q (LOWEST VALUE OF Cmq)
-        0        0       6.6     -4.0];  %alpha_prima
+tf=200; %[s]
+Nstep=201;
+tspan=linspace(0,tf,Nstep);
+options=odeset("RelTol",1e-12,"AbsTol",1e-12);
 
-Cxu = data_1_3(1,1)*cosd(alpha)-data_1_3(1,2)*cosd(alpha)+data_1_3(1,3)*sind(alpha);  % Cxu = CTu*cos(a) - CDu*cos(a) + CLu*sin(a)
-Czu = -data_1_3(1,1)*sind(alpha)-data_1_3(1,3)*cosd(alpha)-data_1_3(1,3)*sind(alpha);  % Czu = CTu*sin(a) - CLu*cos(a) - CDu*sin(A)
-Cxa = CL0-data_1_3(2,2);          % Cxa = CL0 - CDa
-Cza = -data_1_3(2,3)-CD0;         % Cza = -CLa - CD0
-Cxq = -data_1_3(3,2);             % Cxq = -CDq
-Czq = -data_1_3(3,3);             % Czq = -CLq
-Cxap = data_1_3(4,1)*cosd(alpha)-data_1_3(4,2)*cosd(alpha)+data_1_3(4,3)*sind(alpha); % Cxap = CTap*cos(a) - CDap*cos(a) + CLap*sin(a)
-Czap = -data_1_3(4,1)*sind(alpha)-data_1_3(4,3)*cosd(alpha)-data_1_3(4,2)*sind(alpha);% Czap = -CTap*sin(a) - CLap*cos(a) - CDap*sin(a)
+xi=[0 0 0 0];
 
-% Longitudinal Stability Derivatives
-%                    X                                 Z                                M
-ctrlderiv_3=[0.5*dens*u0*S*Cxu         -dens*u0*S*Cw0+0.5*dens*u0*S*Czu    0.5*dens*u0*S*MAC*data_1_3(1,4);      %u
-             0.5*dens*u0*S*Cxa         0.5*dens*u0*S*Cza                   0.5*dens*u0*S*MAC*data_1_3(2,4);      %w
-             0.25*dens*u0*S*MAC*Cxq    0.25*dens*u0*S*MAC*Czq              0.25*dens*u0*S*MAC^2*data_1_3(3,4);   %q
-             0.25*dens*S*MAC*Cxap      0.25*dens*S*MAC*Czap                0.25*dens*S*MAC^2*data_1_3(4,4)];     %w·
+[t,x]=ode45(@section3,tspan,xi,options);
+figure
+hold on
+grid on
+plot(t(:),x(:,1))    
+xlabel('t [s]')
+ylabel('\Deltau [m/s]')
 
-A_3=zeros(4);
+figure
+hold on
+grid on
+plot(t(:),x(:,2))
+xlabel('t [s]')
+ylabel('w [m/s]')
 
-% Linearized Dynamic System
-% Delta u Row
-A_3(1,1)=ctrlderiv_3(1,1)/m;
-A_3(1,2)=ctrlderiv_3(2,1)/m;
-A_3(1,4)=-g;
+figure
+hold on
+grid on
+plot(t(:),x(:,3))
+xlabel('t [s]')
+ylabel('q [rad/s]')
 
-% Delta w· Row
-A_3(2,1)=ctrlderiv_3(1,2)/(m-ctrlderiv_3(4,2));
-A_3(2,2)=ctrlderiv_3(2,2)/(m-ctrlderiv_3(4,2));
-A_3(2,3)=(ctrlderiv_3(3,2)+m*u0)/(m-ctrlderiv_3(4,2));
+figure
+hold on
+grid on
+plot(t(:),x(:,4))
+xlabel('t [s]')
+ylabel('\Delta\Theta [rad]')
 
-% q· Row
-A_3(3,1)=(1/Iy)*(ctrlderiv_3(1,3)+ctrlderiv_3(4,3)*ctrlderiv_3(1,2)/(m-ctrlderiv_3(4,2)));
-A_3(3,2)=(1/Iy)*(ctrlderiv_3(2,3)+ctrlderiv_3(4,3)*ctrlderiv_3(2,2)/(m-ctrlderiv_3(4,2)));
-A_3(3,3)=(1/Iy)*(ctrlderiv_3(3,3)+ctrlderiv_3(4,3)*(ctrlderiv_3(3,2)+m*u0)/(m-ctrlderiv_3(4,2)));
 
-% Delta Theta· Row
-A_3(4,3)=1;
-
-% Short Period Approximation
-Ashort_3=zeros(3);
-
-Ashort_3(1,1)=A_3(2,2);
-Ashort_3(1,2)=A_3(2,3);
-Ashort_3(2,1)=A_3(3,2);
-Ashort_3(2,2)=A_3(3,3);
-Ashort_3(3,2)=A_3(4,3);
-
-% Fugoid Approximation
-Afug_3=zeros(3);
-
-Afug_3(1,1)=A_3(1,1)-(A_3(3,1)/A_3(3,3))*A_3(1,3);
-Afug_3(1,2)=A_3(1,2)-(A_3(3,2)/A_3(3,3))*A_3(1,3);
-Afug_3(1,3)=A_3(1,4);
-Afug_3(2,1)=A_3(2,1)-(A_3(3,1)/A_3(3,3))*A_3(2,3);
-Afug_3(2,2)=A_3(2,2)-(A_3(3,2)/A_3(3,3))*A_3(2,3);
-Afug_3(3,1)=-A_3(3,1)/A_3(3,3);
-Afug_3(3,2)=-A_3(3,2)/A_3(3,3);
-
-[eigenvectors_3,eigenvalues_3]=eig(A_3);
-eigenvalues_3=diag(eigenvalues_3);
-[eigenvectors_short_3,eigenvalues_short_3]=eig(Ashort_3);
-eigenvalues_short_3=diag(eigenvalues_short_3);
-[eigenvectors_fug_3,eigenvalues_fug_3]=eig(Afug_3);
-eigenvalues_fug_3=diag(eigenvalues_fug_3);
 
