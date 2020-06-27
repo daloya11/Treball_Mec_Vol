@@ -125,7 +125,58 @@ title('\fontsize{16}Eigenvalues evolution for different C_l_\beta')
 legend('C_l_beta = -0.3','C_l_beta = -0.225','C_l_beta = -0.15','C_l_beta = -0.075','C_l_beta = -0');
 
 %% PART 3
+% Take the value of Cl_beta that gives a slightly unstable spiral mode, and
+% integrate numerically and plot this mode corresponding to an initial
+% perturbed mank angle phi=5º
 
+tf=200; %[s]
+Nstep=201;
+tspan=linspace(0,tf,Nstep);
+options=odeset("RelTol",1e-12,"AbsTol",1e-12);
+
+xi=[0 0 0 0];
+
+[t,x]=ode45(@section3_2,tspan,xi,options);
+figure
+hold on
+grid on
+plot(t(:),x(:,1)/u0)  %x(:,1)/u0 és aproximadament beta
+xlabel('t [s]')
+ylabel('\beta [rad]')
+
+figure
+hold on
+grid on
+plot(t(:),x(:,2))
+xlabel('t [s]')
+ylabel('p [rad/s]')
+
+figure
+hold on
+grid on
+plot(t(:),x(:,3))
+xlabel('t [s]')
+ylabel('r [rad/s]')
+
+figure
+hold on
+grid on
+plot(t(:),x(:,4))
+xlabel('t [s]')
+ylabel('\phi [rad]')
+
+
+xhi=-x(:,1)/u0; %xhi=-beta
+xe=u0.*t;
+ye=u0.*xhi.*t+x(:,1);
+
+figure
+hold on
+grid on
+plot(xe,ye)
+xlabel('x_E')
+ylabel('y_E')
+title('Trajectoria')
 
 
 

@@ -170,8 +170,38 @@ legend('-23','-22,5','-22','-21,5','-21')
 % For the lowest value of Cmq plot the short period mode corresponding to
 % an initial perturbed angle of attack alpha = 3º
 
+tf=1000; %[s]
+Nstep=1001;
+tspan=linspace(0,tf,Nstep);
+options=odeset("RelTol",1e-12,"AbsTol",1e-12);
 
-cmq_3 = min(cmq);
+xi=[0 0 0 0];
 
+[t,x]=ode45(@section3,tspan,xi,options);
+figure
+hold on
+grid on
+plot(t(:),x(:,1))    
+xlabel('t [s]')
+ylabel('\Deltau [m/s]')
 
+figure
+hold on
+grid on
+plot(t(:),x(:,2))
+xlabel('t [s]')
+ylabel('w [m/s]')
 
+figure
+hold on
+grid on
+plot(t(:),x(:,3))
+xlabel('t [s]')
+ylabel('q [rad/s]')
+
+figure
+hold on
+grid on
+plot(t(:),x(:,4))
+xlabel('t [s]')
+ylabel('\Delta\Theta [rad]')

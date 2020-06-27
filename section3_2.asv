@@ -1,0 +1,59 @@
+function z=section3_2(t,x)
+
+load('data_mv.mat');   % We load the input data from the main program
+
+%Apartat 3
+%Dades per al problema lateral
+%       Cy     Cl      Cn
+coefL=[-1.08 -0.281  0.184; %beta (valor de Cl_beta per espiral inestable)
+        0    -0.502 -0.222; %p
+        0     0.195 -0.360; %r
+        0     0.053 0.0083; %delta a
+        0.179 0     -0.113];%delta r
+
+%            Y                              L                           N
+compL=[0.5*dens*u0*S*coefL(1,1) 0.5*den*u0*S*b*coefL(1,2) 0.5*den*u0*S*b*coefL(1,3);         %v
+      0.25*dens*u0*S*b*coefL(2,1) 0.25*den*u0*S*b^2*coefL(2,2) 0.25*den*u0*S*b^2*coefL(2,3);       %p
+      0.25*dens*u0*S*b*coefL(3,1) 0.25*den*u0*S*b^2*coefL(3,2) 0.25*den*u0*S*b^2*coefL(3,3)];      %r
+
+Y_a=1/2*den*u0^2*S*coefL(4,1);
+L_a=1/2*den*u0^2*S*b*coefL(4,2);
+N_a=1/2*den*u0^2*S*b*coefL(4,3);
+
+%Y_r=1/2*den*u0^2*S*coefL(5,1);
+%L_r=1/2*den*u0^2*S*b*coefL(5,2);
+N_r=1/2*den*u0^2*S*b*coefL(5,3);
+
+AL=zeros(4,4);
+%Fila 1
+AL(1,1)=compL(1,1)/m;
+AL(1,2)=compL(2,1)/m;
+AL(1,3)=(compL(3,1)/m)-u0;
+AL(1,4)=g; 
+
+%Fila 2
+AL(2,1)=compL(1,2)/Ixp+Ixzp*compL(1,3);
+AL(2,2)=compL(2,2)/Ixp+Ixzp*compL(2,3);
+AL(2,3)=compL(3,2)/Ixp+Ixzp*compL(3,3);
+
+%Fila 3
+AL(3,1)=Ixzp*compL(1,2)+compL(1,3)/Izp;
+AL(3,2)=Ixzp*compL(2,2)+compL(2,3)/Izp;
+AL(3,3)=Ixzp*compL(3,2)+compL(3,3)/Izp;
+
+%Fila 4
+AL(4,2)=1;
+
+if t<=40
+    sigma_a=8*pi/180*sind(9*t);
+else
+    sigma_a=0;
+end
+
+B=zeros(4,1);
+B(1)=Y_a*sigma_a;
+B(2)=(L_a*sigma_a)/Ixp+Ixzp*(N_a);
+B(3)=Ixzp*L_a*sigma_a+(N_a*sigma_a)/Izp;
+
+z=AL*x+B;
+end

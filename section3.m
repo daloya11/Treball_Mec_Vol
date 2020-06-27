@@ -2,10 +2,8 @@ function z=section3(t,x)
 alpha = 3;
 load('data_mv.mat');   % We load the input data from the main program
 
-%Dades per al problema longitudinal
-%      Ct   Cd   Cl    Cm
 % Longitudinal Stability Derivatives
-%      CT       CD      CL      Cm
+%          CT       CD      CL      Cm
 data_1_3=[-0.055   0       0.13    0.013;  %û
         0        0.2     4.4     -1.0;   %alpha
         0        0       5.65    -10.25;  %^q (LOWEST VALUE OF Cmq)
